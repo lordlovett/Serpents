@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Serpents
 {
+	/// <summary>
+	/// Events Delegate class, events are declared here and subscribed to and 'fired' as needed
+	/// </summary>
 	public class EventDelegate : MonoBehaviour
 	{
 		#region Game Event Delegates

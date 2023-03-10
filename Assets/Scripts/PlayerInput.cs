@@ -4,10 +4,16 @@ using UnityEngine;
 
 namespace Serpents
 {
+	/// <summary>
+	/// This class component is attached to the same object as the Serpent class, 
+	/// it handles the user input for changing the direction of the connected Serpent
+	/// </summary>
 	public class PlayerInput : MonoBehaviour
 	{
 		[SerializeField]
 		private InputType m_inputType;
+
+		private Vector2Int m_inputDirection;
 
 		public enum InputType
 		{
@@ -20,25 +26,37 @@ namespace Serpents
 			//COUNT = UI_Buttons,
 		}
 
+		/// <summary>
+		/// Set the input type
+		/// </summary>
 		public void SetInputType(InputType inputType)
 		{
 			m_inputType = inputType;
 		}
 
+		/// <summary>
+		/// Reset the input direction
+		/// </summary>
+		public void ResetInput()
+		{
+			m_inputDirection = Vector2Int.zero;
+		}
+
+		/// <summary>
+		/// Get the input direction based on the input type
+		/// </summary>
 		public Vector2Int GetInputDirection()
 		{
-			Vector2Int direction = Vector2Int.zero;
-
 			switch (m_inputType)
 			{
 				case InputType.ArrowKeys:
-					direction = GetDirectionArrowKeys();
+					m_inputDirection = GetDirectionArrowKeys();
 					break;
 				case InputType.WasdKeys:
-					direction = GetDirectionWasd();
+					m_inputDirection = GetDirectionWasd();
 					break;
 				case InputType.NumPad8426:
-					direction = GetDirection8426Keys();
+					m_inputDirection = GetDirection8426Keys();
 					break;
 				/*case InputType.Click_Touch:
 					direction = GetDirectionClickTouch();
@@ -47,135 +65,108 @@ namespace Serpents
 					direction = GetDirectionUIButtons();
 					break;*/
 				default:
-					direction = GetDirectionArrowKeys();
+					m_inputDirection = GetDirectionArrowKeys();
 					break;
 			}
 
-			return direction;
+			return m_inputDirection;
 		}
 
+		/// <summary>
+		/// Get input from Arrow Keys
+		/// </summary>
 		private Vector2Int GetDirectionArrowKeys()
 		{
-			Vector2Int direction = Vector2Int.zero;
-
 			if (Input.GetKey(KeyCode.DownArrow))
 			{
-				direction = Vector2Int.down;
+				m_inputDirection = Vector2Int.down;
 			}
 			else if (Input.GetKey(KeyCode.UpArrow))
 			{
-				direction = Vector2Int.up;
+				m_inputDirection = Vector2Int.up;
 			}
 			else if (Input.GetKey(KeyCode.RightArrow))
 			{
-				direction = Vector2Int.right;
+				m_inputDirection = Vector2Int.right;
 			}
 			else if (Input.GetKey(KeyCode.LeftArrow))
 			{
-				direction = Vector2Int.left;
+				m_inputDirection = Vector2Int.left;
 			}
 
-			return direction;
+			return m_inputDirection;
 		}
 
+		/// <summary>
+		/// Get input from WASD Keys
+		/// </summary>
 		private Vector2Int GetDirectionWasd()
 		{
-			Vector2Int direction = Vector2Int.zero;
-
 			if (Input.GetKey(KeyCode.S))
 			{
-				direction = Vector2Int.down;
+				m_inputDirection = Vector2Int.down;
 			}
 			else if (Input.GetKey(KeyCode.W))
 			{
-				direction = Vector2Int.up;
+				m_inputDirection = Vector2Int.up;
 			}
 			else if (Input.GetKey(KeyCode.D))
 			{
-				direction = Vector2Int.right;
+				m_inputDirection = Vector2Int.right;
 			}
 			else if (Input.GetKey(KeyCode.A))
 			{
-				direction = Vector2Int.left;
+				m_inputDirection = Vector2Int.left;
 			}
 
-			return direction;
+			return m_inputDirection;
 		}
 
+		/// <summary>
+		/// Get input from 8426 Keys (Arrows on key pad)
+		/// </summary>
 		private Vector2Int GetDirection8426Keys()
 		{
-			Vector2Int direction = Vector2Int.zero;
-
 			if (Input.GetKey(KeyCode.Keypad2))
 			{
-				direction = Vector2Int.down;
+				m_inputDirection = Vector2Int.down;
 			}
 			else if (Input.GetKey(KeyCode.Keypad8))
 			{
-				direction = Vector2Int.up;
+				m_inputDirection = Vector2Int.up;
 			}
 			else if (Input.GetKey(KeyCode.Keypad6))
 			{
-				direction = Vector2Int.right;
+				m_inputDirection = Vector2Int.right;
 			}
 			else if (Input.GetKey(KeyCode.Keypad4))
 			{
-				direction = Vector2Int.left;
+				m_inputDirection = Vector2Int.left;
 			}
 
-			return direction;
+			return m_inputDirection;
 		}
 
+		/// <summary>
+		/// Get input from mouse click or finger touch position, relative to serpent position on screen
+		/// </summary>
+		// Didn't get around to implementing an input system for this method
 		private Vector2Int GetDirectionClickTouch()
 		{
 			throw new NotImplementedException("Input Method not impemented yet, oops");
 
-			//Vector2Int direction = Vector2Int.zero;
-
-			/*if (Input.GetKey(KeyCode.DownArrow))
-			{
-				direction = Vector2Int.down;
-			}
-			else if (Input.GetKey(KeyCode.UpArrow))
-			{
-				direction = Vector2Int.up;
-			}
-			else if (Input.GetKey(KeyCode.RightArrow))
-			{
-				direction = Vector2Int.right;
-			}
-			else if (Input.GetKey(KeyCode.LeftArrow))
-			{
-				direction = Vector2Int.left;
-			}*/
-
-			//return direction;
+			//return m_inputDirection;
 		}
 
+		/// <summary>
+		/// Get input from arrow button in UI on screen
+		/// </summary>
+		// Didn't get around to implementing an input system for this method
 		private Vector2Int GetDirectionUIButtons()
 		{
 			throw new NotImplementedException("Input Method not impemented yet, oops");
 
-			//Vector2Int direction = Vector2Int.zero;
-
-			/*if (Input.GetKey(KeyCode.DownArrow))
-			{
-				direction = Vector2Int.down;
-			}
-			else if (Input.GetKey(KeyCode.UpArrow))
-			{
-				direction = Vector2Int.up;
-			}
-			else if (Input.GetKey(KeyCode.RightArrow))
-			{
-				direction = Vector2Int.right;
-			}
-			else if (Input.GetKey(KeyCode.LeftArrow))
-			{
-				direction = Vector2Int.left;
-			}*/
-
-			//return direction;
+			//return m_inputDirection;
 		}
 	}
 }

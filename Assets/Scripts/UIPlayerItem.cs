@@ -6,6 +6,9 @@ using System;
 
 namespace Serpents
 {
+	/// <summary>
+	/// Used to preview each player's name and serpent colour, as well as allowing which input method controls that players serpent
+	/// </summary>
 	public class UIPlayerItem : MonoBehaviour
 	{
 		[SerializeField]
@@ -20,6 +23,9 @@ namespace Serpents
 
 		private const string NAME_TEXT = "Name: ";
 
+		/// <summary>
+		/// Display player/serpent name and a preview of the serpents colour
+		/// </summary>
 		public void SetParameters(string name, Color colour)
 		{
 			m_playerName = name;
@@ -28,6 +34,9 @@ namespace Serpents
 			m_colourChip.color = colour;
 		}
 
+		/// <summary>
+		/// Setup dropdown to have the proper values to select user input method
+		/// </summary>
 		private void OnEnable()
 		{
 			m_dropdown.options.Clear();
@@ -52,6 +61,9 @@ namespace Serpents
 			m_dropdown.onValueChanged.RemoveAllListeners();
 		}
 
+		/// <summary>
+		/// If user input changed here, fire event to set the new input method to the proper serpent instance
+		/// </summary>
 		void OnValueChanged(int value)
 		{
 			PlayerInput.InputType type = (PlayerInput.InputType)value;

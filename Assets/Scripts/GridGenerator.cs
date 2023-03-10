@@ -1,23 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class CubeGenerator : MonoBehaviour
+/// <summary>
+/// Currently just used to destroy the previewing test objects in the Unity editor scene view
+/// </summary>
+public class GridGenerator : MonoBehaviour
 {
-	public static GameObject[,] GenerateCube(Transform parent, GameObject cubePrefab, int cubeSize, float cubeScale)
+	// Not used for this project, but started as a prototype for generating the GridCell array for this project
+	/*public static GameObject[,] GenerateCube(Transform parent, GameObject cubePrefab, int cubeSize, float cubeScale)
 	{
-		//posOffset = Vector3.zero;
 		GameObject[,] cArray = new GameObject[cubeSize, cubeSize];
 		if (parent != null && cubePrefab != null)
 		{
-			DestroyCube(parent);
+			DestroyGrid(parent);
 
 			float cScale = cubeScale / cubeSize;
 			Vector3 pos = Vector3.zero;
 
 			Vector3 scaleOffset = (Vector3.one + Vector3.down) * (cubeScale / 2);
 			scaleOffset -= (Vector3.one + Vector3.down) * (cScale / 2);
-			//posOffset = scaleOffset;
 
 			for (int x = 0; x < cubeSize; x++)
 			{
@@ -39,9 +39,9 @@ public class CubeGenerator : MonoBehaviour
 		}
 
 		return cArray;
-	}
+	}*/
 
-	public static void DestroyCube(Transform parent)
+	public static void DestroyGrid(Transform parent)
 	{
 		if (parent != null)
 		{

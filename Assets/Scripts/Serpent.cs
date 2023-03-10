@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Serpents
 {
+	/// <summary>
+	/// This class represents an instanced serpent object/player, it takes an input direction from the PlayerInput class and controls the movement of the Serpent
+	/// </summary>
 	[RequireComponent(typeof(PlayerInput))]
 	public class Serpent : MonoBehaviour
 	{
@@ -20,18 +23,18 @@ namespace Serpents
 		private string m_serpentName = "";
 		private Color m_colour;
 
-		[Header("Debug Parameters")]
-		[SerializeField] private Vector2Int m_moveDirection;
-		[SerializeField] private Vector2Int m_moveInput = Vector2Int.zero;
-				
-		[SerializeField] private int CurrentSize => m_serpentSegments.Count;
-
-		[SerializeField] private int m_currentHeadCellIndex;
+		private Vector2Int m_moveDirection;
+		private Vector2Int m_moveInput = Vector2Int.zero;
+		
+		private int m_currentHeadCellIndex;
 		private int m_indexOfLastCell;
 
 		private Dictionary<int, SerpentSegment> m_serpentSegments = new Dictionary<int, SerpentSegment>();
 		private List<Renderer> m_segmentRenderers = new List<Renderer>();
 
+		/// <summary>
+		/// A small class to help manage each body segment in a serpent
+		/// </summary>
 		public class SerpentSegment
 		{
 			public Transform _segment;
@@ -49,23 +52,17 @@ namespace Serpents
 			}
 		}
 
+		/// <summary>
+		/// Returns the name of the serpent
+		/// </summary>
 		public string GetName()
 		{
 			return m_serpentName;
 		}
 
-		// Subscribe to events
-		private void OnEnable()
-		{
-			
-		}
-
-		// Unsubscribe from events
-		private void OnDisable()
-		{
-
-		}
-
+		/// <summary>
+		/// Initializes the Serpent with the given parameters, and creates the initial tail segments
+		/// </summary>
 		public void Initialize(string name, int startIndex, Vector2Int startDirection, PlayerInput.InputType inputType)
 		{
 			m_serpentName = name;
@@ -99,6 +96,9 @@ namespace Serpents
 			}
 		}
 
+		/// <summary>
+		/// Sets the colour of the serpent head and all tail segments
+		/// </summary>
 		public void SetColour(Color colour)
 		{
 			m_colour = colour;
@@ -110,31 +110,44 @@ namespace Serpents
 			}
 		}
 
+		/// <summary>
+		/// Sets the input type for this Serpent instance.
+		/// Call from UI Manager when users change the input after a new serpent has been added
+		/// </summary>
 		public void SetInputType(PlayerInput.InputType inputType)
 		{
 			m_playerInput.SetInputType(inputType);
 		}
 
+		/// <summary>
+		/// Retrieve the user input direction from the PlayerInput component, to be used in the next FixedUpdate call to change the Serpents direction
+		/// </summary>
 		void Update()
 		{
 			// Get user input from input component
 			m_moveInput = m_playerInput.GetInputDirection();
 		}
 
-		// Serpent will 1 grid segment per update
+		/// <summary>
+		/// Move the Serpent one cell postion, either in current direction or new direction.
+		/// If Serpent hits a wall or serpent (other or self), it dies.
+		/// If next cell contains the apple, it is consumed and this Serpent gains a new tail segment
+		/// </summary>
 		void FixedUpdate()
 		{
+			// If the game has not been started, do nothing/exit function
 			if (!SerpentsManager.Instance.GameIsRunning)
 			{ 
 				return;
 			}
 
-			// Move serpent 1 unit in given direction
+			// If user changed to a valid direction, change Serpent direction
 			if (m_moveInput != Vector2Int.zero && !IsOppositeOrSameDirection(m_moveInput, m_moveDirection))
 			{
 				m_moveDirection = m_moveInput;
 			}
 
+			// Move Serpent head 1 unit in given direction
 			if (!MoveToNextCell())
 			{
 				// Hit a wall/serpent, dead
@@ -145,23 +158,29 @@ namespace Serpents
 				gameObject.SetActive(false);
 			}
 
-			// If 'Ate an apple', add tail segment
+			// If apple is consumed, add a tail segment
 			if (SerpentsManager.Instance.DoesCellContainApple(m_currentHeadCellIndex))
 			{
 				EventDelegate.FireAppleConsumed();
 				AddTailSegment();
 			}
 		}
-
+		
+		/// <summary>
+		/// Checks if the given directions are parallel to each other, 
+		/// move direction is only changed if new input direction is perpendicular to current move direction
+		/// </summary>
 		bool IsOppositeOrSameDirection(Vector2Int v1, Vector2Int v2)
 		{
 			return Mathf.Abs(Vector2.Dot(v1, v2)) == 1;
 		}
 
+		/// <summary>
+		/// If the next GridCell is valid (not wall or serpent), moves the Serpent head to new position and moves all tail segments to follow.
+		/// Returns true if the Serpent moves successfully, false if it hits an obstacle.
+		/// </summary>
 		private bool MoveToNextCell()
-		{
-			//Debug.Log("Begin moving");
-			
+		{			
 			GridCell cell = SerpentsManager.Instance.GetAdjacentCell(m_currentHeadCellIndex, m_moveDirection);
 			if (cell == null || cell.ContainsSerpent)
 			{
@@ -201,12 +220,16 @@ namespace Serpents
 				m_serpentSegments[++segmentKey].SetCellIndex(i);
 			}
 
+			// Reset the new direction vectors to zero
 			m_moveInput = Vector2Int.zero;
-			
-			//Debug.Log("End moving");
+			m_playerInput.ResetInput();
+
 			return true;
 		}
 
+		/// <summary>
+		/// Add a new tail segment to the end of the Serpent and set it's colour to match the Serpent
+		/// </summary>
 		private void AddTailSegment()
 		{
 			Transform tailSeg = Instantiate(m_tailSegment, m_tailBase).transform;
@@ -224,6 +247,9 @@ namespace Serpents
 			m_segmentRenderers.Add(rend);
 		}
 
+		/// <summary>
+		/// The Serpent has died, remove all references to this Serpent from the GridCell array (don't kill another Serpent for moving onto a dead Serpent)
+		/// </summary>
 		public void KillSerpent()
 		{
 			// Clear cells so they don't think the serpent is still occupying them

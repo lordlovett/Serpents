@@ -4,8 +4,14 @@ using UnityEngine;
 
 namespace Serpents
 {
+	/// <summary>
+	/// Class for creating the grid of positions for the serpents to move through
+	/// </summary>
 	public class Grid
 	{
+		/// <summary>
+		/// Creates an array of GridCell, with X * Y size
+		/// </summary>
 		public static GridCell[] GenerateGrid(int gridSizeX, int gridSizeY, float fieldSize = 10f)
 		{
 			GridCell[] posArray = new GridCell[gridSizeX * gridSizeY];
@@ -15,7 +21,6 @@ namespace Serpents
 			float xDenominator = (gridSizeY > gridSizeX) ? (float)((float)gridSizeY / (float)gridSizeX) * 2f : 2f;
 			float yDenominator = (gridSizeX > gridSizeY) ? (float)((float)gridSizeX / (float)gridSizeY) * 2f : 2f;
 			Vector2 field = new Vector2(fieldSize / xDenominator, fieldSize / yDenominator);
-			//Debug.LogFormat("field: {0}", field);
 			Vector2 scaleOffset = Vector2.one * field;
 			scaleOffset -= Vector2.one * (cellScale / 2);
 			
@@ -34,8 +39,11 @@ namespace Serpents
 				}
 			}
 
+			// This function was being called from an editor window to test the creation of the grid cells,
+			// this condition prevents issues from being called while not in 'play mode'
 			if (Application.isPlaying)
 			{
+				// Sets a unit scale for sizing the serpents and apple relative to the size of the grid
 				SerpentsManager.Instance.UnitScale = cellScale;
 				Vector2 scale = new Vector2();
 				scale.x = (field.x < field.y ? field.x / field.y : 1f);
@@ -45,7 +53,5 @@ namespace Serpents
 
 			return posArray;
 		}
-
-
 	}
 }
